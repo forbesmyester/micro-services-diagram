@@ -1,0 +1,16 @@
+{
+  "name": "ppp",
+  "version": "0.9.0",
+  "description": "",
+  "main": "ppp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "get_tlid_encoder_decoder": "^0.9.3",
+    "http-proxy": "^1.11.1",
+    "parted": "^0.1.1"
+  }
+}
