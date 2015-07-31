@@ -4,4 +4,4 @@ require('seneca')()
         if (msg.prequel) { p = msg.prequel + '-'; }
         done(null, {id: p + Math.random()})
     })
-    .listen({ port: 8000 });
+    .listen({ port: 7999 });
