@@ -15,7 +15,8 @@
     "body-parser": "^1.13.2",
     "eslint": "^1.0.0",
     "expect.js": "^0.3.1",
-    "get_tlid_encoder_decoder": "^0.9.3",
+    "finalhandler": "^0.4.0",
+    "get_tlid_encoder_decoder": "^0.9.4",
     "griddle-react": "^0.2.13",
     "http-proxy": "^1.11.1",
     "mocha": "^2.2.5",
@@ -26,6 +27,7 @@
     "require-parts": "^0.9.9",
     "require-parts-babel": "^0.9.9",
     "seneca": "^0.6.3",
+    "serve-static": "^1.10.0",
     "webpack": "^1.10.5"
   }
 }

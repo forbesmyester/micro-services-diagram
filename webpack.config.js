@@ -2,7 +2,7 @@ var q = {
     plugins: ['require-parts-babel']
 };
 module.exports = {
-    entry: __dirname + "/index.jsx",
+    entry: __dirname + "/public/index.jsx",
     module: {
         loaders: [
             {
@@ -19,7 +19,7 @@ module.exports = {
     },
     lazy: true,
     output: {
-        filename: "index.js",
+        filename: "public/index.js",
         publicPath: "/",
         path: __dirname
     },

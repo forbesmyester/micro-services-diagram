@@ -3,10 +3,12 @@ var http = require('http'),
     getTLIdEncoderDecoder = require("get_tlid_encoder_decoder"),
     JsonParser = require('parted').json,
     bodyParser = require('body-parser'),
-    events = require('events');
+    events = require('events'),
+    finalhandler = require('finalhandler'),
+    serveStatic = require('serve-static');
 
 
-var tLIdEncoderDecoder = getTLIdEncoderDecoder(new Date(2015, 6, 29).getTime(), 5);
+var tLIdEncoderDecoder = getTLIdEncoderDecoder(require('./config.js').baseDate, 5);
 
 var proxyEvent = new events.EventEmitter();
 
@@ -32,7 +34,7 @@ function restreamer(req, next) {
 
 var getTargetServer = function(req, next) {
     setTimeout(function() {
-    next('http://127.0.0.1:7999');
+        next('http://127.0.0.1:7999');
     }, 100);
 }
 
@@ -51,7 +53,7 @@ proxy.on('proxyReq', function(proxyRes, req, res) {
     res.end = function() {
         proxyEvent.emit('disconnect', {
             tlid: req.__tlid,
-            data: { resp: data.toString(), headers: res._headers }
+            data: { time: new Date().getTime(), resp: data.toString(), headers: res._headers }
         });
         if( data && data.toString ) {
             myEnd.call( res, data.toString() );
@@ -91,23 +93,30 @@ http.createServer(function(req, res) {
 
 
 // The monitor
-http.createServer(function(req, res) {
+var serve = serveStatic('public', {'index': ['index.html']})
+http.createServer(function(req, res, next) {
 
-    res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
-    });
+    if (req.url == '/evt') {
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
 
-    res.write(getWriteSseData('initial', []));
+        res.write(getWriteSseData('initial', []));
 
-    proxyEvent.on('connect', function(data) {
-        res.write(getWriteSseData('c-' + data.tlid, data.data));
-    });
+        proxyEvent.on('connect', function(data) {
+            res.write(getWriteSseData('c-' + data.tlid, data.data));
+        });
 
-    proxyEvent.on('disconnect', function(data) {
-        res.write(getWriteSseData('d-' + data.tlid, data.data));
-    });
+        proxyEvent.on('disconnect', function(data) {
+            res.write(getWriteSseData('d-' + data.tlid, data.data));
+        });
+        return;
+    }
+
+    var done = finalhandler(req, res);
+    serve(req, res, done);
 
 }).listen(5051);
 

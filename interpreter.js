@@ -4,18 +4,18 @@ var R = require('require-parts')('ramda', 'src', ['keys','countBy', 'mapObjIndex
 
 var getTLIdEncoderDecoder = require("get_tlid_encoder_decoder");
 
-var tLIdEncoderDecoder = getTLIdEncoderDecoder(new Date(2015, 6, 29).getTime(), 5);
+var tLIdEncoderDecoder = getTLIdEncoderDecoder(require('./config.js').baseDate, 5);
 
 function Intr() {
     this._d = {};
 }
 
 Intr.encode = function(l) {
-    return tLIdEncoderDecoder.encode(l.getTime());
+    return tLIdEncoderDecoder.encode(l);
 }
 
 Intr.decode = function(k) {
-    return new Date(tLIdEncoderDecoder.decode(k));
+    return tLIdEncoderDecoder.decode(k);
 }
 
 Intr.prototype.push = function(id, data) {
@@ -32,6 +32,21 @@ Intr._getConstructionMap = R.pipe(
     })
 );
 
+Intr.getColumns = function() {
+    return [
+        "Connect Time",
+        "Request Headers",
+        "Method",
+        "Request Body",
+        "Target",
+        "Status",
+        "Response Time",
+        'Response Body',
+        'Response Headers',
+        'Response Time'
+    ];
+};
+
 Intr.prototype.get = function(id, data) {
     var r = [],
         consMap = Intr._getConstructionMap(this._d),
@@ -39,19 +54,25 @@ Intr.prototype.get = function(id, data) {
         i = 0;
 
     var mapper = function(m) {
-        var dk = 'c-' + m[0];
-        var rr = {
-            "Connect Time": Intr.decode(m[0]).toISOString(),
-            "Response Time": null,
-            "Request Length": null,
-            "Request Headers": this._d[dk].headers,
-            "Method": this._d[dk].method,
-            "Request Body": this._d[dk].body,
-            "Target": this._d[dk].target,
-            "Status": "On Going"
-        };
-        if (m[i][1]) {
+        var ck = 'c-' + m[0],
+            dk = 'd-' + m[0],
+            rr = {
+                "Connect Time": new Date(Intr.decode(m[0])).toISOString(),
+                "Response Time": null,
+                "Request Headers": this._d[ck].headers,
+                "Method": this._d[ck].method,
+                "Request Body": this._d[ck].body ? this._d[ck].body : null,
+                "Target": this._d[ck].target,
+                "Status": "On Going"
+            };
+
+        if (m[1]) {
+            rr['Status'] = 'Complete';
+            rr['Response Body'] = this._d[dk].resp;
+            rr['Response Headers'] = this._d[dk].headers;
+            rr['Response Time'] = this._d[dk].time - Intr.decode(m[0]) + 'ms';
         }
+
         return rr;
     }.bind(this);
 
