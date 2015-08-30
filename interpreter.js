@@ -47,7 +47,7 @@ Intr.getColumns = function() {
     ];
 };
 
-Intr.prototype.get = function(id, data) {
+Intr.prototype.getRows = function(id, data) {
     var r = [],
         consMap = Intr._getConstructionMap(this._d),
         tmp = {},

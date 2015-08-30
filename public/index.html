@@ -8,9 +8,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta charset="utf-8" />
+  <style>
+    #root-griddle {
+      position: absolute;
+      top: 0;
+      right: 50%;
+      width: 50%;
+      bottom: 0;
+      left: 0;
+    }
+    #root-graphviz-dot {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 50%;
+      width: 50%;
+      background-color: #DDD;
+      overflow: scroll;
+    }
+  </style>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root-graphviz-dot"></div>
+  <div id="root-griddle"></div>
 </body>
 <!-- The core React library -->
 <!-- <script src="https://fb.me/JSXTransformer-0.13.3.js"></script> -->

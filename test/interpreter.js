@@ -50,7 +50,7 @@ describe('interpreter', function() {
             body: 'a=1&b=2',
             target: 'web'
         });
-        expect(intr.get()).to.eql([
+        expect(intr.getRows()).to.eql([
             {
                 "Connect Time": new Date(Intr.decode(times[0])).toISOString(),
                 "Response Time": null,
@@ -75,7 +75,7 @@ describe('interpreter', function() {
             resp: '{"ok":true}',
             time: Intr.decode(times[2])
         });
-        expect(intr.get()).to.eql([
+        expect(intr.getRows()).to.eql([
             {
                 "Connect Time": new Date(Intr.decode(times[0])).toISOString(),
                 "Response Time": null,
@@ -87,7 +87,7 @@ describe('interpreter', function() {
             },
             {
                 "Connect Time": new Date(Intr.decode(times[1])).toISOString(),
-                "Response Time": 1000,
+                "Response Time": '1000ms',
                 "Request Headers": { path: "/" },
                 "Method": "POST",
                 "Request Body": 'a=1&b=2',
