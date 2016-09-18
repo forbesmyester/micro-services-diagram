@@ -38,5 +38,5 @@ function renderTable(data) {
     );
 }
 
-render([]);
+renderTable([]);
 

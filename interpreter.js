@@ -12,11 +12,11 @@ function Intr() {
 
 Intr.encode = function(l) {
     return tLIdEncoderDecoder.encode(l);
-}
+};
 
 Intr.decode = function(k) {
     return tLIdEncoderDecoder.decode(k);
-}
+};
 
 Intr.prototype.push = function(id, data) {
     this._d[id] = data;
@@ -24,7 +24,7 @@ Intr.prototype.push = function(id, data) {
 
 Intr._getConstructionMap = R.pipe(
     R.keys,
-    R.countBy(function(s) { return s.substr(2) }),
+    R.countBy(function(s) { return s.substr(2); }),
     R.mapObjIndexed(function(v, k) { return [k, v > 1]; }),
     R.values,
     R.sort(function(a, b) {
@@ -47,11 +47,27 @@ Intr.getColumns = function() {
     ];
 };
 
-Intr.prototype.getRows = function(id, data) {
-    var r = [],
-        consMap = Intr._getConstructionMap(this._d),
-        tmp = {},
-        i = 0;
+Intr.prototype.getGraph = function() {
+    var consMap = Intr._getConstructionMap(this._d);
+
+    var sample1 = {
+        person: { name: null },
+        order: { owner: { link: { target: "person" } } },
+        a: {
+            letter: {
+                link: {
+                    target: "person.name",
+                    diaprops: { color: "red" }
+                }
+            }
+        },
+        b: { something: null }
+    };
+
+};
+
+Intr.prototype.getRows = function() {
+    var consMap = Intr._getConstructionMap(this._d);
 
     var mapper = function(m) {
         var ck = 'c-' + m[0],

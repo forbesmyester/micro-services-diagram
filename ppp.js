@@ -105,13 +105,22 @@ http.createServer(function(req, res, next) {
 
         res.write(getWriteSseData('initial', []));
 
-        proxyEvent.on('connect', function(data) {
+        function eConnect(data) {
             res.write(getWriteSseData('c-' + data.tlid, data.data));
+        }
+
+        function eDisconnect(data) {
+            res.write(getWriteSseData('d-' + data.tlid, data.data));
+        }
+
+        proxyEvent.on('connect', eConnect);
+        proxyEvent.on('disconnect', eDisconnect);
+
+        req.on('end', function() {
+            proxyEvent.removeListener('connect', eConnect)
+            proxyEvent.removeListener('disconnect', eDisconnect)
         });
 
-        proxyEvent.on('disconnect', function(data) {
-            res.write(getWriteSseData('d-' + data.tlid, data.data));
-        });
         return;
     }
 
